@@ -37,11 +37,11 @@ def index():
                             "Valor 2": val2
                         })
         else:
-            return render_template("resultado.html", diferencias=None, error="The files do not have the same structure")
+            return render_template("resultado.html", diferencias=None, error="")
 
         return render_template("resultado.html", diferencias=diferencias, error=None)
     return render_template("index.html")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
 
