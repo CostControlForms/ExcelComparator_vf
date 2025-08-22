@@ -50,7 +50,7 @@ def index():
         f2name = secure_filename(file2.filename)
         path1 = os.path.join(UPLOAD_FOLDER, f1name)
         path2 = os.path.join(UPLOAD_FOLDER, f2name)
-        file1.save(path1)
+        file1.lsve(path1)
         file2.save(path2)
 
         # Leer
