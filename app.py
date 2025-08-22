@@ -7,7 +7,7 @@ from uuid import uuid4
 from io import BytesIO
 DIFF_CACHE = {}
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates", static_folder="static")
 
 # ===== Config =====
 UPLOAD_FOLDER = "uploads"
