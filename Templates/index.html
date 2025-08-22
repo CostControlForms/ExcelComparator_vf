@@ -1,36 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comparador de Excel - Burgundy Style</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Excel comparison tool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body class="bg-light">
-
-<nav class="navbar" style="background-color: #800020;">
-    <div class="container-fluid">
-        <span class="navbar-brand mb-0 h1 text-white">Santander Bank - Excel comparer</span>
-    </div>
+<body>
+<nav class="navbar" style="background-color:#a60000;">
+  <div class="container-fluid d-flex align-items-center">
+    <span class="navbar-brand mb-0 h1 text-white">Santander Bank - Excel comparison tool</span>
+  </div>
 </nav>
 
 <div class="container mt-5">
-    <div class="card shadow p-4">
-        <h3 class="text-center mb-4" style="color:#800020;">Please, select the files your want to compare</h3>
-        <form method="POST" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label class="form-label">Excel file 1</label>
-                <input class="form-control" type="file" name="file1" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Excel file 2</label>
-                <input class="form-control" type="file" name="file2" required>
-            </div>
-            <button type="submit" class="btn w-100 text-white" style="background-color:#800020;">Comparar</button>
-        </form>
+  <div class="card shadow p-4">
+    <div class="d-flex align-items-center mb-3">
+      <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Santander" style="height:40px;margin-right:10px;">
+      
     </div>
+
+    <h3 class="text-center mb-4" style="color:#a60000;">
+      Please, select the files you want to compare
+    </h3>
+
+    <form id="compare-form" method="POST" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label for="file1" class="form-label">Excel file 1</label>
+        <input class="form-control" type="file" name="file1" id="file1" accept=".xls,.xlsx" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="file2" class="form-label">Excel file 2</label>
+        <input class="form-control" type="file" name="file2" id="file2" accept=".xls,.xlsx" required>
+      </div>
+
+      <button id="btn-compare" type="submit" class="btn w-100 text-white" style="background-color:#a60000;" disabled>
+        Compare
+      </button>
+    </form>
+  </div>
 </div>
 
+<script>
+/* Validación estricta en cliente: sólo .xls/.xlsx, deshabilita botón, bloquea submit */
+(function () {
+  const allowedRE = /\.(xls|xlsx)$/i;
+  const f1 = document.getElementById("file1");
+  const f2 = document.getElementById("file2");
+  const btn = document.getElementById("btn-compare");
+  const form = document.getElementById("compare-form");
+
+  function isExcel(input){
+    const name = input.files && input.files[0] ? input.files[0].name.toLowerCase() : "";
+    return allowedRE.test(name);
+  }
+
+  function setValidity(input){
+    if (!input.files || input.files.length === 0) { input.setCustomValidity(""); return; }
+    input.setCustomValidity(isExcel(input) ? "" : "Only Excel files (.xls, .xlsx) are allowed.");
+  }
+
+  function updateUI(){
+    setValidity(f1);
+    setValidity(f2);
+    btn.disabled = !(isExcel(f1) && isExcel(f2));
+  }
+
+  f1.addEventListener("change", updateUI);
+  f2.addEventListener("change", updateUI);
+
+  form.addEventListener("submit", function(e){
+    updateUI();
+    if (!form.reportValidity()) {
+      e.preventDefault();
+      alert("❌ Please select two Excel files (.xls, .xlsx).");
+    }
+  });
+
+  // Estado inicial
+  updateUI();
+})();
+</script>
 </body>
 </html>
