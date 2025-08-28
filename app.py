@@ -9,9 +9,16 @@ DIFF_CACHE = {}
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 
+app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
+
 # ===== Config =====
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+if __name__ == "__main__":
+    app.run(debug=False)
 
 # Sólo permitimos Excel
 ALLOWED_EXTENSIONS = {".xls", ".xlsx"}
